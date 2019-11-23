@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Face Recognition based Attendance System</title>
+	<script src="face-api.min.js"></script>
+	<script src="https://unpkg.com/lodash@4/lodash.min.js"></script>
+	<script src="https://unpkg.com/lowdb@0.17/dist/low.min.js"></script>
+	<script src="https://unpkg.com/lowdb@0.17/dist/LocalStorage.min.js"></script>
+	<script>
+		const adapter = new LocalStorage('db')
+		const db = low(adapter)
+
+		// Set default state
+		db.defaults({ enrollment: [], attendance: [] })
+		  .write()
+	</script>
+
+	<link rel="stylesheet" href="https://unpkg.com/purecss@1.0.1/build/pure-min.css" integrity="sha384-oAOxQR6DkCoMliIh8yFnu25d7Eq/PHS21PClpwjOTeU2jRSq11vu66rf90/cZr47" crossorigin="anonymous">
+	<link rel="stylesheet" href="http://purecss.io/combo/1.18.13?/css/layouts/marketing.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
+	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/pnotify/3.2.1/pnotify.css">
+	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/pnotify/3.2.1/pnotify.brighttheme.css">
+	<style type="text/css">
+		
+		.page-container {
+		  left: 0;
+		  right: 0;
+		  margin: auto;
+		  margin-top: 20px;
+		  /*padding-left: 280px;*/
+		  display: inline-flex !important;
+		}
+
+		@media only screen and (max-width : 992px) {
+		.page-container {
+		    /*padding-left: 0;*/
+		    display: flex !important;
+		  }
+		}
+
+		.center-content {
+		  display: flex;
+		  flex-direction: column;
+		  justify-content: center;
+		  align-items: center;
+		  flex-wrap: wrap;
+		}
+
+		.margin-sm {
+		  margin: 5px;
+		}
+
+		.margin {
+		  margin: 20px;
+		}
+
+		.button-sm {
+		  padding: 0 10px !important;
+		}
+
+		.pad-sides-sm {
+		  padding: 0 8px !important;
+		}
+
+		#overlay, .overlay {
+		  position: absolute;
+		  top: 0;
+		  left: 0;
+		}
+
+		#facesContainer canvas {
+		  margin: 10px;
+		}
+
+		.button-success,
+        .button-error,
+        .button-warning,
+        .button-secondary {
+            color: white;
+            border-radius: 4px;
+            text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+        }
+
+        .button-success {
+            background: rgb(28, 184, 65); /* this is a green */
+        }
+
+        .button-error {
+            background: rgb(202, 60, 60); /* this is a maroon */
+        }
+
+        .button-warning {
+            background: rgb(223, 117, 20); /* this is an orange */
+        }
+
+        .button-secondary {
+            background: rgb(66, 184, 221); /* this is a light blue */
+        }
+		
+	</style>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.css">
+</head>
+<body>
+	<div class="header">
+	    <div class="home-menu pure-menu pure-menu-horizontal pure-menu-fixed">
+	        <a class="pure-menu-heading" href="/">Face Recognition based Attendance System</a>
+	    </div>
+	</div>
+	<div class="splash-container">
+	    <div class="splash center-content pge-container">
+	        
+	    <div style="position: relative" class="margin">
+	      <video onloadedmetadata="onPlay(this)" id="inputVideo" autoplay muted playsinline></video>
+	      <canvas id="overlay" />
+	    </div>
+
+	    </div>
+	</div>
+
+	<div class="content-wrapper">
+	    <div class="footer l-box is-center">
+	        <a class="pure-button button-secondary" href="/enroll_user">
+			    <i class="fa fa-address-book-o"></i>
+			    Enroll User
+			</a>
+
+			<a class="pure-button button-warning" href="javascript:clearAttendance()">
+			    <i class="fa fa-trash fa-lg"></i>
+			    Clear Attendances
+			</a>
+	    </div>
+
+	</div>
+
+	<a href="https://github.com/natsu90/face-recognition-based-attendance-system"><img style="z-index: 5; position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+
+  	<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+  	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pnotify/3.2.1/pnotify.js"></script>
+	<script type="text/javascript">
+
+		let inputSize = 512
+		let scoreThreshold = 0.5
+
+	    let labeledDescriptors = {}
+	    let faceMatcher = {}
+
+		function getCurrentFaceDetectionNet() {
+		    return faceapi.nets.tinyFaceDetector
+		}
+
+		function isFaceDetectionModelLoaded() {
+		  return !!getCurrentFaceDetectionNet().params
+		}
+
+		function getFaceDetectorOptions() {
+		  return new faceapi.TinyFaceDetectorOptions({ inputSize, scoreThreshold })
+		}
+		
+		function hasEnrollmentData() {
+	      return db.get('enrollment').value().length > 0
+	    } 
+
+	    function clearAttendance() {
+	    	db.set('attendance', []).write()
+	    }
+
+	    if (hasEnrollmentData()) {
+
+	    	// somehow 'descriptors' property is converted to object after saved to lowdb
+	    	// e.g {0: 10, 1: 20, 2: 30} instead of [10, 20, 30]
+			labeledDescriptors = db.get('enrollment').value().map(function(ld) { return {label: ld.label, descriptors: ld.descriptors.map(function(d) { return Object.values(d) } )} })
+
+			faceMatcher = faceapi.FaceMatcher.fromJSON({
+				distanceThreshold: 0.6, // not sure what is this for
+				labeledDescriptors: labeledDescriptors
+			})
+
+	    }
+
+	    document.addEventListener('attendance_detected', (e) => {
+
+	      if (db.get('attendance').filter({name: e.detail}).value().length == 0) {
+
+	        const name = e.detail
+	        const time = Date.now()
+
+	        new PNotify({
+	        	type: 'success',
+	        	text: name + ' is here!'
+	        })
+
+	        db.get('attendance').push({name, time}).write()
+	      }
+	    })
+
+	    async function onPlay() {
+	      const videoEl = $('#inputVideo').get(0)
+
+	      if(videoEl.paused || videoEl.ended || !isFaceDetectionModelLoaded() || !faceMatcher)
+	        return setTimeout(() => onPlay())
+
+	      const options = getFaceDetectorOptions()
+
+	      const results = await faceapi.detectAllFaces(videoEl, options).withFaceLandmarks()
+	        .withFaceDescriptors()
+
+	      const canvas = $('#overlay').get(0)
+
+	      if (results) {
+
+	        const dims = faceapi.matchDimensions(canvas, videoEl, true)
+
+	        const resizedResults = faceapi.resizeResults(results, dims)
+
+	        resizedResults.forEach(({ detection, descriptor }) => {
+
+	          const label = faceMatcher.findBestMatch(descriptor).label
+	          // dont show unknow persons
+	          if (label == 'unknown')
+	            return
+
+	          document.dispatchEvent(new CustomEvent('attendance_detected', {detail: label}))
+	          // draw detection box
+	          const options = { label }
+	          const drawBox = new faceapi.draw.DrawBox(detection.box, options)
+	          drawBox.draw(canvas)
+	        })
+
+	      } else {
+	        // clear drawings when no detection
+	        const context = canvas.getContext('2d')
+
+	        context.clearRect(0, 0, canvas.width, canvas.height)
+	      }
+
+	      setTimeout(() => onPlay())
+	    }
+
+	    async function run() {
+	    	// load face detection and face expression recognition models
+	    	if (!isFaceDetectionModelLoaded()) {
+				await getCurrentFaceDetectionNet().load('/')
+			}
+			await faceapi.loadFaceLandmarkModel('/')
+			await faceapi.loadFaceRecognitionModel('/')
+
+			// try to access users webcam and stream the images
+			// to the video element
+			const stream = await navigator.mediaDevices.getUserMedia({ video: {} })
+			const videoEl = $('#inputVideo').get(0)
+			videoEl.srcObject = stream
+	    }
+
+	    $(document).ready(function() {
+	    	run()
+	    })
+	</script>
+</body>
+</html>

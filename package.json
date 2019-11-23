@@ -1,0 +1,27 @@
+{
+  "name": "face-recognition-based-attendance-system",
+  "version": "1.0.0",
+  "description": "Face Recognition based Attendance System",
+  "scripts": {
+    "start": "node server.js",
+    "postinstall": "./postinstall.sh",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/natsu90/face-recognition-based-attendance-system.git"
+  },
+  "keywords": [
+    "face-recognition"
+  ],
+  "author": "Sulaiman Sudirman",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/natsu90/face-recognition-based-attendance-system/issues"
+  },
+  "homepage": "https://github.com/natsu90/face-recognition-based-attendance-system#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "request": "^2.88.0"
+  }
+}
