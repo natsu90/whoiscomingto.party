@@ -2,7 +2,7 @@
 
 ### Demo
 
-whoiscomingto.party
+https://whoiscomingto.party
 
 ### Installation
 
