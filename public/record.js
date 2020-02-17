@@ -101,8 +101,10 @@
 
           if (faceMatcher !== null) {
             label = faceMatcher.findBestMatch(descriptor).label
-            boxColor = 'green'
-            document.dispatchEvent(new CustomEvent('attendance_detected', {detail: label}))
+            if (label !== 'unknown') {
+              boxColor = 'green'
+              document.dispatchEvent(new CustomEvent('attendance_detected', {detail: label}))
+            }
           }
 
           // draw detection box
