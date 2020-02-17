@@ -1,0 +1,40 @@
+<html>
+<head>
+  <title>Face Recognition Attendance System</title>
+  <script src="face-api.min.js"></script>
+  <script src="https://unpkg.com/lodash@4/lodash.min.js"></script>
+  <script src="https://unpkg.com/lowdb@0.17/dist/low.min.js"></script>
+  <script src="https://unpkg.com/lowdb@0.17/dist/LocalStorage.min.js"></script>
+  <script>
+    const adapter = new LocalStorage('db')
+    const db = low(adapter)
+
+    // Set default state
+    db.defaults({ enrollment: [], attendance: [] })
+      .write()
+  </script>
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/pnotify/3.2.1/pnotify.css">
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/pnotify/3.2.1/pnotify.brighttheme.css">
+</head>
+<body>
+  <div id="container">
+    <div id="vid_container">
+        <video onloadedmetadata="onPlay(this)" id="inputVideo" autoplay muted playsinline></video>
+        <canvas id="overlay" />
+    </div>
+    <div id="gui_controls">
+        <ul>
+          <li><i class="fa fa-meh fa-6x" id="emotion-neutral"></i></li>
+          <li><i class="fa fa-smile fa-6x" id="emotion-happy"></i></li>
+          <li><i class="fa fa-surprise fa-6x" id="emotion-surprised"></i></li>
+          <li><i class="fa fa-angry fa-6x" id="emotion-angry"></i></li>
+        </ul>
+    </div>
+  </div> 
+  <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+  <script type="text/javascript" src="enroll.js"></script>
+</body>
+</html>

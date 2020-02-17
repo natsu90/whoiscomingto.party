@@ -1,12 +1,14 @@
-## Face Recognition based Attendance System
+## WhoIsComingTo.Party
 
 ### Demo
 
-http://frbas.sulai.mn/
+whoiscomingto.party
 
 ### Installation
 
-`npm i && npm start`
+`cd functions && npm i && npm run setup`
+
+`firebase deploy`
 
 ### About
 

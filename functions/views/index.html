@@ -1,0 +1,43 @@
+<html>
+<head>
+  <title>Face Recognition Attendance System</title>
+  <script src="face-api.min.js"></script>
+  <script src="https://unpkg.com/lodash@4/lodash.min.js"></script>
+  <script src="https://unpkg.com/lowdb@0.17/dist/low.min.js"></script>
+  <script src="https://unpkg.com/lowdb@0.17/dist/LocalStorage.min.js"></script>
+  <script>
+    const adapter = new LocalStorage('db')
+    const db = low(adapter)
+
+    // Set default state
+    db.defaults({ enrollment: [], attendance: [] })
+      .write()
+  </script>
+  <link rel="stylesheet" type="text/css" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/pnotify/3.2.1/pnotify.css">
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/pnotify/3.2.1/pnotify.brighttheme.css">
+</head>
+<body>
+  <div id="container">
+    <div id="vid_container">
+        <video onloadedmetadata="onPlay(this)" id="inputVideo" autoplay muted playsinline></video>
+        <canvas id="overlay" />
+    </div>
+    <div id="gui_controls">
+        <ul>
+          <li><a title="Enroll New User" href="javascript:enrollUser()"><i class="fa fa-user-plus fa-6x"></i></a></li>
+          <li><a title="Clear Attendance" href="javascript:clearAttendance()"><i class="fa fa-trash fa-6x"></i></a></li>
+          <li><a title="Clear Users" href="javascript:clearUsers()"><i class="fa fa-user-times fa-6x"></i></a></li>
+        </ul>
+    </div>
+  </div> 
+
+  <a href="https://github.com/natsu90/whoiscomingto.party"><img style="z-index: 5; position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/38ef81f8aca64bb9a64448d0d70f1308ef5341ab/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6461726b626c75655f3132313632312e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png"></a>
+
+  <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pnotify/3.2.1/pnotify.js"></script>
+  	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+  <script type="text/javascript" src="record.js"></script>
+</body>
+</html>
