@@ -6,12 +6,6 @@
 
 https://whoiscomingto.party
 
-### Installation
-
-`cd functions && npm i && npm run setup`
-
-`firebase deploy`
-
 ### About
 
 With all the craze about Machine Learning nowadays, I wish to try my hands on this technology especially Face Recognition. But unfortunately if you are just a humble software developer it will be a long journey. But luckily when I'm scrolling around in Github, I found this awesome library which is called [face-api.js](https://github.com/justadudewhohacks/face-api.js).

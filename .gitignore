@@ -1,3 +1,1 @@
-node_modules/
-models/
-.firebase
+.DS_Store
