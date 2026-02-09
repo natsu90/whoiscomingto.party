@@ -17,8 +17,10 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css">
   <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/pnotify/3.2.1/pnotify.css">
   <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/pnotify/3.2.1/pnotify.brighttheme.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.3/gh-fork-ribbon.min.css" />
 </head>
 <body>
+  <a class="github-fork-ribbon" href="https://github.com/natsu90/whoiscomingto.party" data-ribbon="Fork me on GitHub" title="Fork me on GitHub">Fork me on GitHub</a>
   <div id="container">
     <div id="vid_container">
         <video onloadedmetadata="onPlay(this)" id="inputVideo" autoplay muted playsinline></video>
@@ -26,9 +28,9 @@
     </div>
     <div id="gui_controls">
         <ul>
-          <li><a title="Enroll New User" href="javascript:enrollUser()"><i class="fa fa-user-plus fa-6x"></i></a></li>
-          <li><a title="Clear Attendance" href="javascript:clearAttendance()"><i class="fa fa-trash fa-6x"></i></a></li>
-          <li><a title="Clear Users" href="javascript:clearUsers()"><i class="fa fa-user-times fa-6x"></i></a></li>
+          <li><a title="Enroll New User" href="javascript:enrollUser()"><i class="fa fa-user-plus fa-6x" style="color: green;"></i></a></li>
+          <li><a title="Clear Attendance" href="javascript:clearAttendance()"><i class="fa fa-retweet fa-6x" style="color: yellow;"></i></a></li>
+          <li><a title="Clear Users" href="javascript:clearUsers()"><i class="fa fa-trash fa-6x" style="color: red;"></i></a></li>
         </ul>
     </div>
   </div> 
